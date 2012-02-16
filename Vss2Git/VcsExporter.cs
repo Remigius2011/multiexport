@@ -76,7 +76,7 @@ namespace Hpdi.Vss2Git
             this.emailDictionary = emailDictionary;
         }
 
-        public void ExportToVcs(string repoPath)
+        public void ExportToVcs(string outputDirectory)
         {
             workQueue.AddLast(delegate(object work)
             {
@@ -86,9 +86,9 @@ namespace Hpdi.Vss2Git
                 LogStatus(work, "Initializing repository");
 
                 // create repository directory if it does not exist
-                if (!Directory.Exists(repoPath))
+                if (!Directory.Exists(outputDirectory))
                 {
-                    Directory.CreateDirectory(repoPath);
+                    Directory.CreateDirectory(outputDirectory);
                 }
 
                 string vcs = vcsWrapper.GetVcs();
@@ -122,8 +122,7 @@ namespace Hpdi.Vss2Git
                 foreach (var rootProject in revisionAnalyzer.RootProjects)
                 {
                     // root must be repo path here - the path mapper uses paths relative to this one
-                    var rootPath = repoPath;
-                    pathMapper.SetProjectPath(rootProject.PhysicalName, rootPath, rootProject.Path);
+                    pathMapper.SetProjectPath(rootProject.PhysicalName, outputDirectory, rootProject.Path);
                 }
 
                 var changesets = changesetBuilder.Changesets;
@@ -267,8 +266,8 @@ namespace Hpdi.Vss2Git
                 stopwatch.Stop();
 
                 logger.WriteSectionSeparator();
-                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss}", new DateTime(stopwatch.ElapsedTicks));
-                logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.ElapsedTicks));
+                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss}", new DateTime(stopwatch.Elapsed.Ticks));
+                logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.Elapsed.Ticks));
                 logger.WriteLine(vcs + " time: {0:HH:mm:ss}", new DateTime(vcsWrapper.ElapsedTime().Ticks));
                 logger.WriteLine(vcs + " commits: {0}", commitCount);
                 logger.WriteLine(vcs + " tags: {0}", tagCount);

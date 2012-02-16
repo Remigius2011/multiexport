@@ -59,8 +59,7 @@ namespace Hpdi.Vss2Git
         {
             if (resetRepo)
             {
-                DeleteDirectory(GetOutputDirectory());
-                Thread.Sleep(0);
+                DeleteDirectory(GetOutputDirectory(), true);
                 Directory.CreateDirectory(GetOutputDirectory());
             }
             VcsExec("init");

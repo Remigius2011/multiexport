@@ -242,7 +242,6 @@ namespace Hpdi.Vss2Git
 
                         activityEvent.WaitOne(200);
                     }
-                    Thread.Sleep(50);
                     while (appendBuffer(stdoutBuffer, stdoutReader, '>')) ;
                     while (appendBuffer(stderrBuffer, stderrReader, '!')) ;
 
@@ -282,7 +281,7 @@ namespace Hpdi.Vss2Git
                 Logger.WriteLine(line);
                 return true;
             }
-            return false;
+            return !reader.EndOfFile;
         }
 
         public string QuoteRelativePath(string path)
@@ -411,7 +410,7 @@ namespace Hpdi.Vss2Git
         {
             if (!needsCommit) return false;
             needsCommit = false;
-            return DoCommit(authorEmail, authorEmail, comment, localTime);
+            return DoCommit(authorName, authorEmail, comment, localTime);
         }
 
         protected virtual void CheckOutputDirectory()
@@ -425,18 +424,18 @@ namespace Hpdi.Vss2Git
             string metaDirSuffix = "\\" + metaDir;
             foreach (string dir in dirs)
             {
-                if (!dir.EndsWith(metaDirSuffix))
+                if (string.IsNullOrEmpty(metaDir) || !dir.EndsWith(metaDirSuffix))
                 {
                     throw new ApplicationException("The output directory is not empty");
                 }
             }
-            if (!Directory.Exists(Path.Combine(outputDirectory, metaDir)))
+            if (!string.IsNullOrEmpty(metaDir) && !Directory.Exists(Path.Combine(outputDirectory, metaDir)))
             {
                 throw new ApplicationException("The output directory does not contain the meta directory " + metaDir);
             }
         }
 
-        protected static void DeleteDirectory(string path)
+        protected static void DeleteDirectory(string path, bool contentOnly)
         {
             // this method should be used with caution - therefore it is protected
             if (!Directory.Exists(path))
@@ -454,17 +453,20 @@ namespace Hpdi.Vss2Git
 
             foreach (string dir in dirs)
             {
-                DeleteDirectory(dir);
+                DeleteDirectory(dir, false);
             }
 
-            try
+            if (!contentOnly)
             {
-                Directory.Delete(path, false);
-            }
-            catch (IOException)
-            {
-                Thread.Sleep(0);
-                Directory.Delete(path, false);
+                try
+                {
+                    Directory.Delete(path, false);
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(0);
+                    Directory.Delete(path, false);
+                }
             }
         }
 

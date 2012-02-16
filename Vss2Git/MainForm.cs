@@ -51,7 +51,21 @@ namespace Hpdi.Vss2Git
 
         private void OpenLog(string filename)
         {
-            logger = string.IsNullOrEmpty(filename) ? Logger.Null : new Logger(filename);
+            if (!string.IsNullOrEmpty(filename))
+            {
+                try
+                {
+                    string path = Path.GetDirectoryName(filename);
+                    Directory.CreateDirectory(path);
+                    logger = new Logger(filename);
+                    return;
+                }
+                catch (Exception x)
+                {
+                    throw new ApplicationException("Can't create log file " + filename + ": " + x.Message);
+                }
+            }
+            logger = Logger.Null;
         }
 
         private void goButton_Click(object sender, EventArgs e)
@@ -294,8 +308,18 @@ namespace Hpdi.Vss2Git
             {
                 var settings = Properties.Settings.Default;
                 string lastSettingsFile = settings.LastSettingsFile;
-                settingsSaveFileDialog.InitialDirectory = Path.GetDirectoryName(lastSettingsFile);
-                settingsSaveFileDialog.FileName = Path.GetFileName(lastSettingsFile);
+                try
+                {
+                    if (!string.IsNullOrEmpty(lastSettingsFile))
+                    {
+                        settingsSaveFileDialog.InitialDirectory = Path.GetDirectoryName(lastSettingsFile);
+                        settingsSaveFileDialog.FileName = Path.GetFileName(lastSettingsFile);
+                    }
+                }
+                catch (Exception x)
+                {
+                    // ignore
+                }
                 if (DialogResult.OK == settingsSaveFileDialog.ShowDialog(this))
                 {
                     string fileName = settingsSaveFileDialog.FileName;
@@ -325,8 +349,18 @@ namespace Hpdi.Vss2Git
             {
                 var settings = Properties.Settings.Default;
                 string lastSettingsFile = settings.LastSettingsFile;
-                settingsOpenFileDialog.InitialDirectory = Path.GetDirectoryName(lastSettingsFile);
-                settingsOpenFileDialog.FileName = Path.GetFileName(lastSettingsFile);
+                try
+                {
+                    if (!string.IsNullOrEmpty(lastSettingsFile))
+                    {
+                        settingsOpenFileDialog.InitialDirectory = Path.GetDirectoryName(lastSettingsFile);
+                        settingsOpenFileDialog.FileName = Path.GetFileName(lastSettingsFile);
+                    }
+                }
+                catch (Exception x)
+                {
+                    // ignore
+                }
                 if (DialogResult.OK == settingsOpenFileDialog.ShowDialog(this))
                 {
                     LoadSettings(settingsOpenFileDialog.FileName);
