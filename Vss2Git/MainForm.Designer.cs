@@ -94,6 +94,7 @@
             this.settingsSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.saveSettingsButton = new System.Windows.Forms.Button();
             this.loadSettingsButton = new System.Windows.Forms.Button();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.vssGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.outputGroupBox.SuspendLayout();
@@ -710,6 +711,12 @@
             this.loadSettingsButton.UseVisualStyleBackColor = true;
             this.loadSettingsButton.Click += new System.EventHandler(this.loadSettingsButton_Click);
             // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 10000;
+            this.toolTip.InitialDelay = 200;
+            this.toolTip.ReshowDelay = 100;
+            this.toolTip.ShowAlways = true;
             // MainForm
             // 
             this.AcceptButton = this.goButton;
@@ -818,6 +825,7 @@
         private System.Windows.Forms.SaveFileDialog settingsSaveFileDialog;
         private System.Windows.Forms.Button saveSettingsButton;
         private System.Windows.Forms.Button loadSettingsButton;
+        private System.Windows.Forms.ToolTip toolTip;
 
     }
 }

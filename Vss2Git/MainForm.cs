@@ -156,6 +156,7 @@ namespace Hpdi.Vss2Git
                 statusTimer.Enabled = true;
                 goButton.Enabled = false;
                 cancelButton.Text = "Cancel";
+                toolTip.SetToolTip(cancelButton, "Click to cancel the export");
             }
             catch (Exception ex)
             {
@@ -222,6 +223,7 @@ namespace Hpdi.Vss2Git
                 statusTimer.Enabled = false;
                 goButton.Enabled = true;
                 cancelButton.Text = "Close";
+                toolTip.SetToolTip(cancelButton, "Click to close the window");
             }
 
             var exceptions = workQueue.FetchExceptions();
@@ -265,7 +267,7 @@ namespace Hpdi.Vss2Git
                     codePages[defaultIndex] = encoding;
                 }
             }
-
+            SetToolTips();
             ReadSettings();
         }
 
@@ -275,6 +277,38 @@ namespace Hpdi.Vss2Git
 
             workQueue.Abort();
             workQueue.WaitIdle();
+        }
+
+        private void SetToolTips()
+        {
+            toolTip.SetToolTip(vssDirTextBox, "Enter the full path of the VSS archive directory (containing the file srcsafe.ini)");
+            toolTip.SetToolTip(vssDirButton, "Click to select the VSS archive directory");
+            toolTip.SetToolTip(vssProjectTextBox, "Enter the VSS project root path (starting with $/)");
+            toolTip.SetToolTip(excludeTextBox, "Enter files to be excluded from the export");
+            toolTip.SetToolTip(encodingComboBox, "Select the VSS encoding (used to translate the comments if transcoding is enabled)");
+            toolTip.SetToolTip(outDirTextBox, "Enter the full path of the output directory");
+            toolTip.SetToolTip(outDirButton, "Click to select the output directory");
+            toolTip.SetToolTip(domainTextBox, "This domain will be used to generate e-mail addresses for users which are not contained in emails.properties");
+            toolTip.SetToolTip(logTextBox, "Enter the full path of a log file (the parent directory will be created if it does not exist)");
+            toolTip.SetToolTip(transcodeCheckBox, "Check to translate the commit and label comments to UTF-8");
+            toolTip.SetToolTip(resetRepoCheckBox, "Check to reset the output directory and target repo (only if local) to its initial state before the export");
+            toolTip.SetToolTip(vcsSetttingsTabs, "Select a tab to determine the target VCS and to show its settings");
+            toolTip.SetToolTip(forceAnnotatedCheckBox, "Check to force all git tags to be created with the '-a' option");
+            toolTip.SetToolTip(svnRepoTextBox, "Enter either a local directory to use a local archive or the URL of an svn repo");
+            toolTip.SetToolTip(svnRepoButton, "Click to select a directory for a local svn repo");
+            toolTip.SetToolTip(svnProjectPathTextBox, "Enter an optional root path for the project in svn (with '/' separators)");
+            toolTip.SetToolTip(svnUserTextBox, "Enter the svn user name here (only for remote repos)");
+            toolTip.SetToolTip(svnPasswordTextBox, "Enter the svn password here (only for remote repos)");
+            toolTip.SetToolTip(svnStandardLayoutCheckBox, "Check to use the standard names for svn trunk/tags/branches directories");
+            toolTip.SetToolTip(svnTrunkTextBox, "Enter a non-standard name for the svn trunk directory");
+            toolTip.SetToolTip(svnTagsTextBox, "Enter a non-standard name for the svn tags directory");
+            toolTip.SetToolTip(svnBranchesTextBox, "Enter a non-standard name for the svn branches directory");
+            toolTip.SetToolTip(anyCommentUpDown, "Set the maximum time frame to join subsequent check-ins having an arbitrary comment to a single commit");
+            toolTip.SetToolTip(sameCommentUpDown, "Set the maximum time frame to join subsequent check-ins having the same comment to a single commit");
+            toolTip.SetToolTip(saveSettingsButton, "Click to save the current settings to a file");
+            toolTip.SetToolTip(loadSettingsButton, "Click to load application settings from a previously saved settings file");
+            toolTip.SetToolTip(goButton, "Click to start the export");
+            toolTip.SetToolTip(cancelButton, "Click to close the window");
         }
 
         private void ReadSettings()
