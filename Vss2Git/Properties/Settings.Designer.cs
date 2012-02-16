@@ -274,5 +274,29 @@ namespace Hpdi.Vss2Git.Properties {
                 this["LastSettingsFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Verify {
+            get {
+                return ((bool)(this["Verify"]));
+            }
+            set {
+                this["Verify"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string VerifyPath {
+            get {
+                return ((string)(this["VerifyPath"]));
+            }
+            set {
+                this["VerifyPath"] = value;
+            }
+        }
     }
 }

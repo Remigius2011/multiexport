@@ -50,12 +50,15 @@
             this.timeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.outputGroupBox = new System.Windows.Forms.GroupBox();
             this.showLogButton = new System.Windows.Forms.Button();
+            this.verifyDirButton = new System.Windows.Forms.Button();
+            this.verifyDirTextBox = new System.Windows.Forms.TextBox();
+            this.verifyCheckBox = new System.Windows.Forms.CheckBox();
             this.outDirButton = new System.Windows.Forms.Button();
             this.resetRepoCheckBox = new System.Windows.Forms.CheckBox();
             this.vcsSetttingsTabs = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPageGit = new System.Windows.Forms.TabPage();
             this.forceAnnotatedCheckBox = new System.Windows.Forms.CheckBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPageSvn = new System.Windows.Forms.TabPage();
             this.svnRepoButton = new System.Windows.Forms.Button();
             this.svnProjectPathTextBox = new System.Windows.Forms.TextBox();
             this.svnProjectPathLabel = new System.Windows.Forms.Label();
@@ -96,12 +99,13 @@
             this.saveSettingsButton = new System.Windows.Forms.Button();
             this.loadSettingsButton = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.verifyDirBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.vssGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.outputGroupBox.SuspendLayout();
             this.vcsSetttingsTabs.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.tabPageGit.SuspendLayout();
+            this.tabPageSvn.SuspendLayout();
             this.changesetGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sameCommentUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.anyCommentUpDown)).BeginInit();
@@ -109,8 +113,8 @@
             // 
             // vssGroupBox
             // 
-            this.vssGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vssGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.vssGroupBox.Controls.Add(this.vssDirButton);
             this.vssGroupBox.Controls.Add(this.encodingLabel);
             this.vssGroupBox.Controls.Add(this.encodingComboBox);
@@ -129,6 +133,7 @@
             // 
             // vssDirButton
             // 
+            this.vssDirButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.vssDirButton.Image = ((System.Drawing.Image)(resources.GetObject("vssDirButton.Image")));
             this.vssDirButton.Location = new System.Drawing.Point(531, 17);
             this.vssDirButton.Name = "vssDirButton";
@@ -148,8 +153,8 @@
             // 
             // encodingComboBox
             // 
-            this.encodingComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.encodingComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.encodingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.encodingComboBox.FormattingEnabled = true;
             this.encodingComboBox.Location = new System.Drawing.Point(90, 97);
@@ -159,8 +164,8 @@
             // 
             // excludeTextBox
             // 
-            this.excludeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.excludeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.excludeTextBox.Location = new System.Drawing.Point(90, 71);
             this.excludeTextBox.Name = "excludeTextBox";
             this.excludeTextBox.Size = new System.Drawing.Size(464, 20);
@@ -177,8 +182,8 @@
             // 
             // vssProjectTextBox
             // 
-            this.vssProjectTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vssProjectTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.vssProjectTextBox.Location = new System.Drawing.Point(90, 45);
             this.vssProjectTextBox.Name = "vssProjectTextBox";
             this.vssProjectTextBox.Size = new System.Drawing.Size(464, 20);
@@ -186,8 +191,8 @@
             // 
             // vssDirTextBox
             // 
-            this.vssDirTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vssDirTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.vssDirTextBox.Location = new System.Drawing.Point(90, 19);
             this.vssDirTextBox.Name = "vssDirTextBox";
             this.vssDirTextBox.Size = new System.Drawing.Size(435, 20);
@@ -213,8 +218,8 @@
             // 
             // goButton
             // 
-            this.goButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.goButton.Location = new System.Drawing.Point(416, 545);
+            this.goButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.goButton.Location = new System.Drawing.Point(416, 577);
             this.goButton.Name = "goButton";
             this.goButton.Size = new System.Drawing.Size(75, 23);
             this.goButton.TabIndex = 3;
@@ -234,7 +239,7 @@
             this.revisionLabel,
             this.changeLabel,
             this.timeLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 576);
+            this.statusStrip.Location = new System.Drawing.Point(0, 603);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(584, 22);
             this.statusStrip.TabIndex = 5;
@@ -274,9 +279,13 @@
             // 
             // outputGroupBox
             // 
-            this.outputGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.outputGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.outputGroupBox.Controls.Add(this.showLogButton);
+            this.outputGroupBox.Controls.Add(this.verifyDirButton);
+            this.outputGroupBox.Controls.Add(this.verifyDirTextBox);
+            this.outputGroupBox.Controls.Add(this.verifyCheckBox);
             this.outputGroupBox.Controls.Add(this.outDirButton);
             this.outputGroupBox.Controls.Add(this.resetRepoCheckBox);
             this.outputGroupBox.Controls.Add(this.vcsSetttingsTabs);
@@ -290,7 +299,7 @@
             this.outputGroupBox.Controls.Add(this.logLabel);
             this.outputGroupBox.Location = new System.Drawing.Point(12, 138);
             this.outputGroupBox.Name = "outputGroupBox";
-            this.outputGroupBox.Size = new System.Drawing.Size(560, 320);
+            this.outputGroupBox.Size = new System.Drawing.Size(560, 352);
             this.outputGroupBox.TabIndex = 1;
             this.outputGroupBox.TabStop = false;
             this.outputGroupBox.Text = "Output Settings";
@@ -306,8 +315,42 @@
             this.showLogButton.UseVisualStyleBackColor = true;
             this.showLogButton.Click += new System.EventHandler(this.showLogButton_Click);
             // 
+            // verifyDirButton
+            // 
+            this.verifyDirButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.verifyDirButton.Image = ((System.Drawing.Image)(resources.GetObject("verifyDirButton.Image")));
+            this.verifyDirButton.Location = new System.Drawing.Point(531, 119);
+            this.verifyDirButton.Name = "verifyDirButton";
+            this.verifyDirButton.Size = new System.Drawing.Size(23, 23);
+            this.verifyDirButton.TabIndex = 13;
+            this.verifyDirButton.UseVisualStyleBackColor = true;
+            this.verifyDirButton.Click += new System.EventHandler(this.verifyDirButton_Click);
+            // 
+            // verifyDirTextBox
+            // 
+            this.verifyDirTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.verifyDirTextBox.Location = new System.Drawing.Point(90, 121);
+            this.verifyDirTextBox.Name = "verifyDirTextBox";
+            this.verifyDirTextBox.Size = new System.Drawing.Size(435, 20);
+            this.verifyDirTextBox.TabIndex = 12;
+            // 
+            // verifyCheckBox
+            // 
+            this.verifyCheckBox.AutoSize = true;
+            this.verifyCheckBox.Checked = true;
+            this.verifyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.verifyCheckBox.Location = new System.Drawing.Point(9, 123);
+            this.verifyCheckBox.Name = "verifyCheckBox";
+            this.verifyCheckBox.Size = new System.Drawing.Size(52, 17);
+            this.verifyCheckBox.TabIndex = 11;
+            this.verifyCheckBox.Text = "Verify";
+            this.verifyCheckBox.UseVisualStyleBackColor = true;
+            this.verifyCheckBox.CheckedChanged += new System.EventHandler(this.verifyCheckBox_CheckedChanged);
+            // 
             // outDirButton
             // 
+            this.outDirButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.outDirButton.Image = ((System.Drawing.Image)(resources.GetObject("outDirButton.Image")));
             this.outDirButton.Location = new System.Drawing.Point(531, 17);
             this.outDirButton.Name = "outDirButton";
@@ -330,24 +373,27 @@
             // 
             // vcsSetttingsTabs
             // 
-            this.vcsSetttingsTabs.Controls.Add(this.tabPage1);
-            this.vcsSetttingsTabs.Controls.Add(this.tabPage2);
-            this.vcsSetttingsTabs.Location = new System.Drawing.Point(9, 154);
+            this.vcsSetttingsTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.vcsSetttingsTabs.Controls.Add(this.tabPageGit);
+            this.vcsSetttingsTabs.Controls.Add(this.tabPageSvn);
+            this.vcsSetttingsTabs.Location = new System.Drawing.Point(9, 187);
             this.vcsSetttingsTabs.Name = "vcsSetttingsTabs";
             this.vcsSetttingsTabs.SelectedIndex = 0;
             this.vcsSetttingsTabs.Size = new System.Drawing.Size(545, 159);
             this.vcsSetttingsTabs.TabIndex = 10;
             // 
-            // tabPage1
+            // tabPageGit
             // 
-            this.tabPage1.Controls.Add(this.forceAnnotatedCheckBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(537, 133);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "git";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPageGit.Controls.Add(this.forceAnnotatedCheckBox);
+            this.tabPageGit.Location = new System.Drawing.Point(4, 22);
+            this.tabPageGit.Name = "tabPageGit";
+            this.tabPageGit.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGit.Size = new System.Drawing.Size(537, 133);
+            this.tabPageGit.TabIndex = 0;
+            this.tabPageGit.Text = "git";
+            this.tabPageGit.UseVisualStyleBackColor = true;
             // 
             // forceAnnotatedCheckBox
             // 
@@ -361,34 +407,35 @@
             this.forceAnnotatedCheckBox.Text = "Force use of annotated tag objects";
             this.forceAnnotatedCheckBox.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // tabPageSvn
             // 
-            this.tabPage2.Controls.Add(this.svnRepoButton);
-            this.tabPage2.Controls.Add(this.svnProjectPathTextBox);
-            this.tabPage2.Controls.Add(this.svnProjectPathLabel);
-            this.tabPage2.Controls.Add(this.svnBranchesTextBox);
-            this.tabPage2.Controls.Add(this.svnTagsTextBox);
-            this.tabPage2.Controls.Add(this.svnTrunkTextBox);
-            this.tabPage2.Controls.Add(this.svnBranchesLabel);
-            this.tabPage2.Controls.Add(this.svnTagsLabel);
-            this.tabPage2.Controls.Add(this.svnTrunkLabel);
-            this.tabPage2.Controls.Add(this.svnStandardLayoutCheckBox);
-            this.tabPage2.Controls.Add(this.svnRepoTextBox);
-            this.tabPage2.Controls.Add(this.svnRepoLabel);
-            this.tabPage2.Controls.Add(this.svnUserLabel);
-            this.tabPage2.Controls.Add(this.svnPasswordLabel);
-            this.tabPage2.Controls.Add(this.svnPasswordTextBox);
-            this.tabPage2.Controls.Add(this.svnUserTextBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(537, 133);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "svn";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabPageSvn.Controls.Add(this.svnRepoButton);
+            this.tabPageSvn.Controls.Add(this.svnProjectPathTextBox);
+            this.tabPageSvn.Controls.Add(this.svnProjectPathLabel);
+            this.tabPageSvn.Controls.Add(this.svnBranchesTextBox);
+            this.tabPageSvn.Controls.Add(this.svnTagsTextBox);
+            this.tabPageSvn.Controls.Add(this.svnTrunkTextBox);
+            this.tabPageSvn.Controls.Add(this.svnBranchesLabel);
+            this.tabPageSvn.Controls.Add(this.svnTagsLabel);
+            this.tabPageSvn.Controls.Add(this.svnTrunkLabel);
+            this.tabPageSvn.Controls.Add(this.svnStandardLayoutCheckBox);
+            this.tabPageSvn.Controls.Add(this.svnRepoTextBox);
+            this.tabPageSvn.Controls.Add(this.svnRepoLabel);
+            this.tabPageSvn.Controls.Add(this.svnUserLabel);
+            this.tabPageSvn.Controls.Add(this.svnPasswordLabel);
+            this.tabPageSvn.Controls.Add(this.svnPasswordTextBox);
+            this.tabPageSvn.Controls.Add(this.svnUserTextBox);
+            this.tabPageSvn.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSvn.Name = "tabPageSvn";
+            this.tabPageSvn.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSvn.Size = new System.Drawing.Size(537, 133);
+            this.tabPageSvn.TabIndex = 1;
+            this.tabPageSvn.Text = "svn";
+            this.tabPageSvn.UseVisualStyleBackColor = true;
             // 
             // svnRepoButton
             // 
+            this.svnRepoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.svnRepoButton.Image = ((System.Drawing.Image)(resources.GetObject("svnRepoButton.Image")));
             this.svnRepoButton.Location = new System.Drawing.Point(508, 4);
             this.svnRepoButton.Name = "svnRepoButton";
@@ -399,6 +446,8 @@
             // 
             // svnProjectPathTextBox
             // 
+            this.svnProjectPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.svnProjectPathTextBox.Location = new System.Drawing.Point(77, 32);
             this.svnProjectPathTextBox.Name = "svnProjectPathTextBox";
             this.svnProjectPathTextBox.Size = new System.Drawing.Size(454, 20);
@@ -474,6 +523,8 @@
             // 
             // svnRepoTextBox
             // 
+            this.svnRepoTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.svnRepoTextBox.Location = new System.Drawing.Point(77, 6);
             this.svnRepoTextBox.Name = "svnRepoTextBox";
             this.svnRepoTextBox.Size = new System.Drawing.Size(425, 20);
@@ -523,7 +574,7 @@
             // outKindLabel
             // 
             this.outKindLabel.AutoSize = true;
-            this.outKindLabel.Location = new System.Drawing.Point(6, 132);
+            this.outKindLabel.Location = new System.Drawing.Point(6, 161);
             this.outKindLabel.Name = "outKindLabel";
             this.outKindLabel.Size = new System.Drawing.Size(137, 13);
             this.outKindLabel.TabIndex = 9;
@@ -543,8 +594,8 @@
             // 
             // domainTextBox
             // 
-            this.domainTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.domainTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.domainTextBox.Location = new System.Drawing.Point(90, 45);
             this.domainTextBox.Name = "domainTextBox";
             this.domainTextBox.Size = new System.Drawing.Size(464, 20);
@@ -561,8 +612,8 @@
             // 
             // outDirTextBox
             // 
-            this.outDirTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.outDirTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.outDirTextBox.Location = new System.Drawing.Point(90, 19);
             this.outDirTextBox.Name = "outDirTextBox";
             this.outDirTextBox.Size = new System.Drawing.Size(435, 20);
@@ -579,9 +630,9 @@
             // 
             // logTextBox
             // 
-            this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.logTextBox.Location = new System.Drawing.Point(90, 72);
+            this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.logTextBox.Location = new System.Drawing.Point(90, 71);
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.Size = new System.Drawing.Size(435, 20);
             this.logTextBox.TabIndex = 6;
@@ -589,7 +640,7 @@
             // logLabel
             // 
             this.logLabel.AutoSize = true;
-            this.logLabel.Location = new System.Drawing.Point(6, 75);
+            this.logLabel.Location = new System.Drawing.Point(6, 74);
             this.logLabel.Name = "logLabel";
             this.logLabel.Size = new System.Drawing.Size(41, 13);
             this.logLabel.TabIndex = 5;
@@ -597,9 +648,9 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(497, 545);
+            this.cancelButton.Location = new System.Drawing.Point(497, 577);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 4;
@@ -609,13 +660,15 @@
             // 
             // changesetGroupBox
             // 
+            this.changesetGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.changesetGroupBox.Controls.Add(this.label4);
             this.changesetGroupBox.Controls.Add(this.label3);
             this.changesetGroupBox.Controls.Add(this.sameCommentUpDown);
             this.changesetGroupBox.Controls.Add(this.label2);
             this.changesetGroupBox.Controls.Add(this.label1);
             this.changesetGroupBox.Controls.Add(this.anyCommentUpDown);
-            this.changesetGroupBox.Location = new System.Drawing.Point(12, 464);
+            this.changesetGroupBox.Location = new System.Drawing.Point(12, 496);
             this.changesetGroupBox.Name = "changesetGroupBox";
             this.changesetGroupBox.Size = new System.Drawing.Size(560, 75);
             this.changesetGroupBox.TabIndex = 2;
@@ -706,7 +759,8 @@
             // 
             // saveSettingsButton
             // 
-            this.saveSettingsButton.Location = new System.Drawing.Point(12, 545);
+            this.saveSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.saveSettingsButton.Location = new System.Drawing.Point(12, 577);
             this.saveSettingsButton.Name = "saveSettingsButton";
             this.saveSettingsButton.Size = new System.Drawing.Size(75, 23);
             this.saveSettingsButton.TabIndex = 6;
@@ -716,7 +770,8 @@
             // 
             // loadSettingsButton
             // 
-            this.loadSettingsButton.Location = new System.Drawing.Point(93, 545);
+            this.loadSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.loadSettingsButton.Location = new System.Drawing.Point(93, 577);
             this.loadSettingsButton.Name = "loadSettingsButton";
             this.loadSettingsButton.Size = new System.Drawing.Size(75, 23);
             this.loadSettingsButton.TabIndex = 7;
@@ -730,13 +785,14 @@
             this.toolTip.InitialDelay = 200;
             this.toolTip.ReshowDelay = 100;
             this.toolTip.ShowAlways = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.goButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(584, 598);
+            this.ClientSize = new System.Drawing.Size(584, 625);
             this.Controls.Add(this.loadSettingsButton);
             this.Controls.Add(this.saveSettingsButton);
             this.Controls.Add(this.changesetGroupBox);
@@ -746,7 +802,7 @@
             this.Controls.Add(this.vssGroupBox);
             this.Controls.Add(this.statusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(458, 419);
+            this.MinimumSize = new System.Drawing.Size(600, 663);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VSS2Git";
@@ -759,10 +815,10 @@
             this.outputGroupBox.ResumeLayout(false);
             this.outputGroupBox.PerformLayout();
             this.vcsSetttingsTabs.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
+            this.tabPageGit.ResumeLayout(false);
+            this.tabPageGit.PerformLayout();
+            this.tabPageSvn.ResumeLayout(false);
+            this.tabPageSvn.PerformLayout();
             this.changesetGroupBox.ResumeLayout(false);
             this.changesetGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sameCommentUpDown)).EndInit();
@@ -814,8 +870,8 @@
         private System.Windows.Forms.Label svnPasswordLabel;
         private System.Windows.Forms.Label svnUserLabel;
         private System.Windows.Forms.TabControl vcsSetttingsTabs;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPageGit;
+        private System.Windows.Forms.TabPage tabPageSvn;
         private System.Windows.Forms.TextBox svnRepoTextBox;
         private System.Windows.Forms.Label svnRepoLabel;
         private System.Windows.Forms.CheckBox svnStandardLayoutCheckBox;
@@ -839,6 +895,10 @@
         private System.Windows.Forms.Button saveSettingsButton;
         private System.Windows.Forms.Button loadSettingsButton;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button verifyDirButton;
+        private System.Windows.Forms.TextBox verifyDirTextBox;
+        private System.Windows.Forms.CheckBox verifyCheckBox;
+        private System.Windows.Forms.FolderBrowserDialog verifyDirBrowserDialog;
         private System.Windows.Forms.Button showLogButton;
 
     }

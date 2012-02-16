@@ -28,8 +28,6 @@ namespace Hpdi.Vss2Git
     {
         private readonly string outputDirectory;
         private readonly Logger logger;
-        private string vcs;
-        private string metaDir;
         private string executable;
         private string initialArguments;
         private bool shellQuoting;
@@ -41,12 +39,10 @@ namespace Hpdi.Vss2Git
         private const char QuoteChar = '"';
         private const char EscapeChar = '\\';
 
-        protected AbstractVcsWrapper(string outputDirectory, Logger logger, string vcs, string metaDir)
+        protected AbstractVcsWrapper(string outputDirectory, Logger logger)
         {
             this.outputDirectory = outputDirectory;
             this.logger = logger;
-            this.vcs = vcs;
-            this.metaDir = metaDir;
             needsCommit = false;
         }
 
@@ -78,11 +74,6 @@ namespace Hpdi.Vss2Git
             get { return stopwatch; }
         }
 
-        public string GetVcs()
-        {
-            return vcs;
-        }
-
         public TimeSpan ElapsedTime()
         {
             return stopwatch.Elapsed;
@@ -91,6 +82,7 @@ namespace Hpdi.Vss2Git
         public bool FindExecutable()
         {
             string foundPath;
+            string vcs = GetVcs();
             if (FindInPathVar(vcs + ".exe", out foundPath))
             {
                 executable = foundPath;
@@ -384,7 +376,7 @@ namespace Hpdi.Vss2Git
         private void FailExitCode(string exec, string args, string stdout, string stderr, int exitCode)
         {
             throw new ProcessExitException(
-                string.Format(vcs + " returned exit code {0}", exitCode),
+                string.Format(GetVcs() + " returned exit code {0}", exitCode),
                 exec, args, stdout, stderr);
         }
 
@@ -421,6 +413,7 @@ namespace Hpdi.Vss2Git
             {
                 throw new ApplicationException("The output directory is not empty");
             }
+            string metaDir = GetMetaDir();
             string metaDirSuffix = "\\" + metaDir;
             foreach (string dir in dirs)
             {
@@ -470,6 +463,9 @@ namespace Hpdi.Vss2Git
             }
         }
 
+        public abstract string GetVcs();
+        public abstract string GetMetaDir();
+        public abstract string[] GetCompareExcludes();
         public abstract void Init(bool resetRepo);
         public abstract void Configure();
         public abstract bool Add(string path);

@@ -144,6 +144,10 @@ namespace Hpdi.Vss2Git
                     {
                         vcsExporter.CommitEncoding = encoding;
                     }
+                    if (verifyCheckBox.Checked)
+                    {
+                        vcsExporter.VerifyDir = verifyDirTextBox.Text;
+                    }
                     vcsExporter.ResetRepo = resetRepoCheckBox.Checked;
                     vcsExporter.ExportToVcs(outDirTextBox.Text);
                 }
@@ -157,6 +161,7 @@ namespace Hpdi.Vss2Git
                 statusTimer.Enabled = true;
                 goButton.Enabled = false;
                 showLogButton.Enabled = false;
+                loadSettingsButton.Enabled = false;
                 cancelButton.Text = "Cancel";
                 toolTip.SetToolTip(cancelButton, "Click to cancel the export");
             }
@@ -225,6 +230,7 @@ namespace Hpdi.Vss2Git
                 statusTimer.Enabled = false;
                 goButton.Enabled = true;
                 showLogButton.Enabled = true;
+                loadSettingsButton.Enabled = true;
                 cancelButton.Text = "Close";
                 toolTip.SetToolTip(cancelButton, "Click to close the window");
             }
@@ -296,6 +302,9 @@ namespace Hpdi.Vss2Git
             toolTip.SetToolTip(showLogButton, "Click to open the log file (only while idle)");
             toolTip.SetToolTip(transcodeCheckBox, "Check to translate the commit and label comments to UTF-8");
             toolTip.SetToolTip(resetRepoCheckBox, "Check to reset the output directory and target repo (only if local) to its initial state before the export");
+            toolTip.SetToolTip(verifyCheckBox, "Check to perform a binary file comparison of the end result with the content of a given directory tree");
+            toolTip.SetToolTip(verifyDirTextBox, "Enter a directory to compare the end result with (perform a VSS 'Get Latest Version' into this directory)");
+            toolTip.SetToolTip(verifyDirButton, "Click to select the target directory for the verification");
             toolTip.SetToolTip(vcsSetttingsTabs, "Select a tab to determine the target VCS and to show its settings");
             toolTip.SetToolTip(forceAnnotatedCheckBox, "Check to force all git tags to be created with the '-a' option");
             toolTip.SetToolTip(svnRepoTextBox, "Enter either a local directory to use a local archive or the URL of an svn repo");
@@ -439,6 +448,8 @@ namespace Hpdi.Vss2Git
             logTextBox.Text = settings.LogFile;
             transcodeCheckBox.Checked = settings.TranscodeComments;
             resetRepoCheckBox.Checked = settings.ResetRepo;
+            verifyCheckBox.Checked = settings.Verify;
+            verifyDirTextBox.Text = settings.VerifyPath;
             forceAnnotatedCheckBox.Checked = settings.ForceAnnotatedTags;
             anyCommentUpDown.Value = settings.AnyCommentSeconds;
             sameCommentUpDown.Value = settings.SameCommentSeconds;
@@ -475,6 +486,8 @@ namespace Hpdi.Vss2Git
             settings.LogFile = logTextBox.Text;
             settings.TranscodeComments = transcodeCheckBox.Checked;
             settings.ResetRepo = resetRepoCheckBox.Checked;
+            settings.Verify = verifyCheckBox.Checked;
+            settings.VerifyPath = verifyDirTextBox.Text;
             settings.ForceAnnotatedTags = forceAnnotatedCheckBox.Checked;
             settings.AnyCommentSeconds = (int)anyCommentUpDown.Value;
             settings.SameCommentSeconds = (int)sameCommentUpDown.Value;
@@ -557,6 +570,11 @@ namespace Hpdi.Vss2Git
             svnBranchesTextBox.Enabled = enabled;
         }
 
+        private void verifyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            verifyDirTextBox.Enabled = verifyCheckBox.Checked;
+        }
+
         private void vssDirButton_Click(object sender, EventArgs e)
         {
             SelectDirectory(vssDirBrowserDialog, vssDirTextBox);
@@ -570,6 +588,11 @@ namespace Hpdi.Vss2Git
         private void svnRepoButton_Click(object sender, EventArgs e)
         {
             SelectDirectory(svnRepoBrowserDialog, svnRepoTextBox);
+        }
+
+        private void verifyDirButton_Click(object sender, EventArgs e)
+        {
+            SelectDirectory(verifyDirBrowserDialog, verifyDirTextBox);
         }
 
         private void SelectDirectory(FolderBrowserDialog folderBrowser, TextBox textBox)

@@ -64,6 +64,13 @@ namespace Hpdi.Vss2Git
             set { commitEncoding = value; }
         }
 
+        private string verifyDir;
+        public string VerifyDir
+        {
+            get { return verifyDir; }
+            set { verifyDir = value; }
+        }
+
         public VcsExporter(WorkQueue workQueue, Logger logger,
             RevisionAnalyzer revisionAnalyzer, ChangesetBuilder changesetBuilder,
             IVcsWrapper vcsWrapper, IDictionary<string, string> emailDictionary)
@@ -80,7 +87,7 @@ namespace Hpdi.Vss2Git
         {
             workQueue.AddLast(delegate(object work)
             {
-                var stopwatch = Stopwatch.StartNew();
+                var totalStopwatch = Stopwatch.StartNew();
 
                 logger.WriteSectionSeparator();
                 LogStatus(work, "Initializing repository");
@@ -263,14 +270,42 @@ namespace Hpdi.Vss2Git
                     ++changesetId;
                 }
 
-                stopwatch.Stop();
+                bool verifyOK = true;
+                bool doVerify = !string.IsNullOrEmpty(verifyDir) && Directory.Exists(verifyDir);
+                var verifyStopwatch = Stopwatch.StartNew();
+                if (doVerify)
+                {
+                    logger.WriteSectionSeparator();
+                    LogStatus(work, "Verifying final state");
+                    int verifyResult = CompareDirectory(verifyDir, outputDirectory);
+                    if (verifyResult == 0)
+                    {
+                        logger.WriteLine("Verify OK - result is identical to expected state");
+                    }
+                    else
+                    {
+                        logger.WriteLine("Verify failed - result has " + verifyResult + " differences to expected state");
+                        verifyOK = false;
+                    }
+                }
+                verifyStopwatch.Stop();
+
+                totalStopwatch.Stop();
 
                 logger.WriteSectionSeparator();
-                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss}", new DateTime(stopwatch.Elapsed.Ticks));
+                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss}", new DateTime(totalStopwatch.Elapsed.Ticks));
                 logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.Elapsed.Ticks));
                 logger.WriteLine(vcs + " time: {0:HH:mm:ss}", new DateTime(vcsWrapper.ElapsedTime().Ticks));
                 logger.WriteLine(vcs + " commits: {0}", commitCount);
                 logger.WriteLine(vcs + " tags: {0}", tagCount);
+                if (doVerify)
+                {
+                    logger.WriteLine("Verify time: {0:HH:mm:ss}", new DateTime(verifyStopwatch.Elapsed.Ticks));
+                    if (!verifyOK)
+                    {
+                        throw new ApplicationException("Verify failed - see log for details");
+                    }
+                }
             });
         }
 
@@ -822,6 +857,179 @@ namespace Hpdi.Vss2Git
             {
                 renamer(sourcePath, destPath);
             }
+        }
+
+        private int CompareDirectory(string verifyDir, string outputDir)
+        {
+            int verifyLength = verifyDir.Length;
+            int outputLength = outputDir.Length;
+            int result = CompareAllEntries("File", Directory.GetFiles(verifyDir),
+                verifyLength, Directory.GetFiles(outputDir), outputLength, CompareFile);
+            if (workQueue.IsAborting)
+            {
+                return result;
+            }
+            result += CompareAllEntries("Directory", Directory.GetDirectories(verifyDir),
+                verifyLength, Directory.GetDirectories(outputDir), outputLength, CompareDirectory);
+            return result;
+        }
+
+        private delegate int CompareDelegate(string verifyEntry, string outputEntry);
+
+        private int CompareAllEntries(string objectType, string[] verifyEntries, int verifyParentLength,
+            string[] outputEntries, int outputParentLength, CompareDelegate compare)
+        {
+            Array.Sort(verifyEntries);
+            Array.Sort(outputEntries);
+            int verifyIndex = 0;
+            int outputIndex = 0;
+            int verifyLength = verifyEntries.Length;
+            int outputLength = outputEntries.Length;
+            int result = 0;
+            while (verifyIndex < verifyLength || outputIndex < outputLength)
+            {
+                int compareResult;
+                if(verifyIndex >= verifyLength) {
+                    compareResult = 1;
+                }
+                else if (outputIndex >= outputLength)
+                {
+                    compareResult = -1;
+                }
+                else
+                {
+                    compareResult = verifyEntries[verifyIndex].Substring(verifyParentLength + 1)
+                        .CompareTo(outputEntries[outputIndex].Substring(outputParentLength + 1));
+                }
+                if (compareResult < 0)
+                {
+                    // skip .scc files in verify directory
+                    if (!verifyEntries[verifyIndex].EndsWith(".scc"))
+                    {
+                        logger.WriteLine(objectType + " exists only in verify directory "
+                            + verifyEntries[verifyIndex]);
+                        result++;
+                    }
+                    verifyIndex++;
+                }
+                else if (compareResult > 0)
+                {
+                    // skip meta data in output directory
+                    string outputEntry = outputEntries[outputIndex].Substring(outputParentLength + 1);
+                    string[] excludes = vcsWrapper.GetCompareExcludes();
+                    bool found = false;
+                    for (int i = 0; !found && excludes != null && i < excludes.Length; i++)
+                    {
+                        if (outputEntry.Equals(excludes[i]))
+                        {
+                            found = true;
+                        }
+                    }
+                    if (!found)
+                    {
+                        logger.WriteLine(objectType + " exists only in output directory "
+                            + outputEntries[outputIndex]);
+                        result++;
+                    }
+                    outputIndex++;
+                }
+                else
+                {
+                    result += compare(verifyEntries[verifyIndex], outputEntries[outputIndex]);
+                    outputIndex++;
+                    verifyIndex++;
+                }
+                if (workQueue.IsAborting)
+                {
+                    return result;
+                }
+            }
+            return result;
+        }
+
+        private int CompareFile(string file1, string file2)
+        {
+            int result = 1;
+            FileStream stream1 = null;
+            FileStream stream2 = null;
+            try
+            {
+                stream1 = new FileStream(file1, FileMode.Open, FileAccess.Read);
+                stream2 = new FileStream(file2, FileMode.Open, FileAccess.Read);
+                long length = stream1.Length;
+                if (length == stream2.Length)
+                {
+                    // compare only if file sizes are equal
+                    bool done = false;
+                    bool equal = true;
+                    const int bufferSize = 4096;
+                    byte[] buffer1 = new byte[bufferSize];
+                    byte[] buffer2 = new byte[bufferSize];
+                    while (!done && equal)
+                    {
+                        int count1 = stream1.Read(buffer1, 0, bufferSize);
+                        int count2 = stream2.Read(buffer2, 0, bufferSize);
+
+                        if (count1 != count2)
+                        {
+                            // this should not happen - file sizes are equal
+                            string msg = "files have same size but read count is different ("
+                                + count1 + "/" + count2 + ")";
+                            throw new ApplicationException(msg);
+                        }
+                        else if (count1 == 0)
+                        {
+                            // stream.Read returns 0: EOF
+                            done = true;
+                        }
+                        else
+                        {
+                            // compare buffers here
+                            int i = 0;
+                            while(i < count1 && buffer1[i] == buffer2[i])
+                            {
+                                i++;
+                            }
+                            if(i != count1)
+                            {
+                                equal = false;
+                            }
+                            if (workQueue.IsAborting)
+                            {
+                                logger.WriteLine("aborting while comparing files: " + file1 + " / " + file2);
+                                return result;
+                            }
+                        }
+                    }
+                    if (equal)
+                    {
+                        result = 0;
+                    }
+                    else
+                    {
+                        logger.WriteLine("different file content: " + file1 + " / " + file2);
+                    }
+                }
+                else
+                {
+                    logger.WriteLine("different file size: " + file1 + " / " + file2);
+                }
+            }
+            catch (Exception x)
+            {
+                logger.WriteLine("***** error comparing " + file1 + " with "
+                    + file2 + ": " + x.Message);
+            }
+            if (stream1 != null)
+            {
+                stream1.Close();
+            }
+            if (stream2 != null)
+            {
+                stream2.Close();
+            }
+            stream2.Close();
+            return result;
         }
     }
 }

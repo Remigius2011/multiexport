@@ -23,7 +23,9 @@ namespace Hpdi.Vss2Git
     interface IVcsWrapper
     {
         string GetVcs();
+        string GetMetaDir();
         string GetOutputDirectory();
+        string[] GetCompareExcludes();
         bool NeedsCommit();
         void SetNeedsCommit();
         TimeSpan ElapsedTime();

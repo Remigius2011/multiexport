@@ -49,10 +49,25 @@ namespace Hpdi.Vss2Git
 
         public GitWrapper(string outputDirectory, Logger logger, Encoding commitEncoding,
             bool forceAnnotatedTags)
-            : base(outputDirectory, logger, gitExecutable, gitMetaDir)
+            : base(outputDirectory, logger)
         {
             this.commitEncoding = commitEncoding;
             this.forceAnnotatedTags = forceAnnotatedTags;
+        }
+
+        public override string GetVcs()
+        {
+            return gitExecutable;
+        }
+
+        public override string GetMetaDir()
+        {
+            return gitMetaDir;
+        }
+
+        public override string[] GetCompareExcludes()
+        {
+            return new string[] { gitMetaDir };
         }
 
         public override void Init(bool resetRepo)

@@ -51,7 +51,7 @@ namespace Hpdi.Vss2Git
 
         public SvnWrapper(string outputDirectory, string repoUrl, string projectPath,
             string trunk, string tags, string branches, Logger logger)
-            : base(outputDirectory, logger, svnExecutable, svnMetaDir)
+            : base(outputDirectory, logger)
         {
             this.repoUrl = repoUrl;
             this.projectPath = projectPath;
@@ -64,6 +64,21 @@ namespace Hpdi.Vss2Git
         {
             this.username = username;
             this.password = password;
+        }
+
+        public override string GetVcs()
+        {
+            return svnExecutable;
+        }
+
+        public override string GetMetaDir()
+        {
+            return svnMetaDir;
+        }
+
+        public override string[] GetCompareExcludes()
+        {
+            return new string[] { svnMetaDir };
         }
 
         public override void Init(bool resetRepo)
