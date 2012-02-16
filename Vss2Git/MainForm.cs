@@ -32,6 +32,7 @@ namespace Hpdi.Vss2Git
     public partial class MainForm : Form
     {
         public static readonly string vcsTypeGit = "git";
+        public static readonly string vcsTypeHg = "hg";
         public static readonly string vcsTypeSvn = "svn";
 
         private readonly Dictionary<int, EncodingInfo> codePages = new Dictionary<int, EncodingInfo>();
@@ -178,6 +179,10 @@ namespace Hpdi.Vss2Git
             if (vcsType.Equals(vcsTypeGit))
             {
                 return new GitWrapper(repoPath, logger, commitEncoding, forceAnnotatedCheckBox.Checked);
+            }
+            else if (vcsType.Equals(vcsTypeHg))
+            {
+                return new HgWrapper(repoPath, logger, commitEncoding);
             }
             else if (vcsType.Equals(vcsTypeSvn))
             {

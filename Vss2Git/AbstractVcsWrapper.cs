@@ -224,8 +224,8 @@ namespace Hpdi.Vss2Git
                     while (true)
                     {
                         activityEvent.Reset();
-                        while(appendBuffer(stdoutBuffer, stdoutReader, '>'));
-                        while(appendBuffer(stderrBuffer, stderrReader, '!'));
+                        while (appendBuffer(stdoutBuffer, stdoutReader, '>')) ;
+                        while (appendBuffer(stderrBuffer, stderrReader, '!')) ;
 
                         if (process.HasExited)
                         {
