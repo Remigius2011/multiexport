@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using Hpdi.VssLogicalLib;
 using System.IO;
 using System.Configuration;
+using System.Diagnostics;
 
 namespace Hpdi.Vss2Git
 {
@@ -155,6 +156,7 @@ namespace Hpdi.Vss2Git
 
                 statusTimer.Enabled = true;
                 goButton.Enabled = false;
+                showLogButton.Enabled = false;
                 cancelButton.Text = "Cancel";
                 toolTip.SetToolTip(cancelButton, "Click to cancel the export");
             }
@@ -222,6 +224,7 @@ namespace Hpdi.Vss2Git
 
                 statusTimer.Enabled = false;
                 goButton.Enabled = true;
+                showLogButton.Enabled = true;
                 cancelButton.Text = "Close";
                 toolTip.SetToolTip(cancelButton, "Click to close the window");
             }
@@ -290,6 +293,7 @@ namespace Hpdi.Vss2Git
             toolTip.SetToolTip(outDirButton, "Click to select the output directory");
             toolTip.SetToolTip(domainTextBox, "This domain will be used to generate e-mail addresses for users which are not contained in emails.properties");
             toolTip.SetToolTip(logTextBox, "Enter the full path of a log file (the parent directory will be created if it does not exist)");
+            toolTip.SetToolTip(showLogButton, "Click to open the log file (only while idle)");
             toolTip.SetToolTip(transcodeCheckBox, "Check to translate the commit and label comments to UTF-8");
             toolTip.SetToolTip(resetRepoCheckBox, "Check to reset the output directory and target repo (only if local) to its initial state before the export");
             toolTip.SetToolTip(vcsSetttingsTabs, "Select a tab to determine the target VCS and to show its settings");
@@ -589,6 +593,20 @@ namespace Hpdi.Vss2Git
         private void loadSettingsButton_Click(object sender, EventArgs e)
         {
             LoadSettings();
+        }
+
+        private void showLogButton_Click(object sender, EventArgs e)
+        {
+            string logFile = logTextBox.Text;
+            if (File.Exists(logFile))
+            {
+                Process.Start(logFile);
+            }
+            else
+            {
+                MessageBox.Show("log file does not exist", "Show log",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

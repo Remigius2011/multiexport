@@ -137,6 +137,17 @@
   <metadata name="statusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
   </metadata>
+  <data name="showLogButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxAAAAsQAa0jvXUAAAAGYktHRAD/AP8A/6C9p5MAAAAHdElNRQfXCgsNFi6WyDLc
+        AAAA4UlEQVQ4T8XSzwqCMBzAcV+yoluP0KlDTxD0Br1B0SNU0qGsJDIDMWZlNcxBZUp/0AT7aSBtNahT
+        43sYc5+5w4ToxyGk+3PZTLlcYno/jQLw2Q/jYNSbDc0wwDOGAgc3wLYDEef2BP2xzBgKWPvrYrOHsO0B
+        gN3izIJeDQVMy9WXRF8RY3MEkC9W09KLUUBStl3ZgMQR6gxRW0KtPupNMPcPir6TFBMaQKo5VNfQdE64
+        YIVdbUGYYJELjicf226SlxTPYZELwnvknf24SxCXzGGRC3iv5F+gUKnx+nylL5/5AzTjmrC6/hYMAAAA
+        AElFTkSuQmCC
+</value>
+  </data>
   <data name="outDirButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

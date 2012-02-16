@@ -49,6 +49,7 @@
             this.changeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.outputGroupBox = new System.Windows.Forms.GroupBox();
+            this.showLogButton = new System.Windows.Forms.Button();
             this.outDirButton = new System.Windows.Forms.Button();
             this.resetRepoCheckBox = new System.Windows.Forms.CheckBox();
             this.vcsSetttingsTabs = new System.Windows.Forms.TabControl();
@@ -275,6 +276,7 @@
             // 
             this.outputGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.outputGroupBox.Controls.Add(this.showLogButton);
             this.outputGroupBox.Controls.Add(this.outDirButton);
             this.outputGroupBox.Controls.Add(this.resetRepoCheckBox);
             this.outputGroupBox.Controls.Add(this.vcsSetttingsTabs);
@@ -292,6 +294,17 @@
             this.outputGroupBox.TabIndex = 1;
             this.outputGroupBox.TabStop = false;
             this.outputGroupBox.Text = "Output Settings";
+            // 
+            // showLogButton
+            // 
+            this.showLogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.showLogButton.Image = ((System.Drawing.Image)(resources.GetObject("showLogButton.Image")));
+            this.showLogButton.Location = new System.Drawing.Point(531, 69);
+            this.showLogButton.Name = "showLogButton";
+            this.showLogButton.Size = new System.Drawing.Size(23, 23);
+            this.showLogButton.TabIndex = 14;
+            this.showLogButton.UseVisualStyleBackColor = true;
+            this.showLogButton.Click += new System.EventHandler(this.showLogButton_Click);
             // 
             // outDirButton
             // 
@@ -570,7 +583,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.logTextBox.Location = new System.Drawing.Point(90, 72);
             this.logTextBox.Name = "logTextBox";
-            this.logTextBox.Size = new System.Drawing.Size(464, 20);
+            this.logTextBox.Size = new System.Drawing.Size(435, 20);
             this.logTextBox.TabIndex = 6;
             // 
             // logLabel
@@ -826,6 +839,7 @@
         private System.Windows.Forms.Button saveSettingsButton;
         private System.Windows.Forms.Button loadSettingsButton;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button showLogButton;
 
     }
 }
