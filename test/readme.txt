@@ -1,16 +1,11 @@
-How to use the testing support
+Run Exports of Test Repos
 
-0. Install TortoiseSvn (latest version) and add its
-   bin directory to the PATH (you might as well install
-   another svn distro, but TortoiseSvn has got it all)
-
-1. adapt the file passwd: add a username and a password
-   (hint: you might have to type them very often...)
-
-2. optional: if you desire to have another repo path than
-   "/test/project", modify svn-init-repo.bat and
-   svn-checkout-repo.bat accordingly
-
-3. run all.bat to initialize the repo and the working set
-
-4. if you want to reinitialize the test reop, goto step 3.
+1. Install TortoiseGit, TortoiseHg and Tortoise Svn and make sure
+   the respective command line tools are on the PATH by invoking
+   the commands git, hg and svn from any command line
+2. Extract vss.zip to this directory (creates a subdirectory vss etc.)
+3. Run Vss2Git in batch mode with the following command:
+   Vss2Git -b C:\Projects\InHouse\Vss2Git\test\VssTest-0-*.properties
+4. Check log files in test/logs
+5. Verify the content (history, labels etc.) of the exported repos
+   with the respective tortoise
