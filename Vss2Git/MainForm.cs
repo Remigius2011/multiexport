@@ -41,16 +41,39 @@ namespace Hpdi.Vss2Git
         private RevisionAnalyzer revisionAnalyzer;
         private ChangesetBuilder changesetBuilder;
         private string settingsFile;
+        private string[] batchSettingsFiles;
+        private int batchSettingsIndex = -1;
 
         public MainForm(string[] args)
         {
             InitializeComponent();
-            if (args.Length > 0)
+            ParseArgs(ref args);
+        }
+
+        private void ParseArgs(ref string[] args)
+        {
+            // batch processing
+            if (args[0].Equals("-b"))
+            {
+                List<String> batchSttingsList = new List<string>();
+                for (int i = 1; i < args.Length; i++)
+                {
+                    string path = Path.GetDirectoryName(args[i]);
+                    string filePattern = Path.GetFileName(args[i]);
+                    var files = Directory.GetFiles(path, filePattern);
+                    foreach (string file in files)
+                    {
+                        batchSttingsList.Add(file);
+                    }
+                }
+                batchSettingsFiles = batchSttingsList.ToArray();
+                statusTimer.Enabled = true;
+            }
+            else if (args.Length > 1 && File.Exists(args[0]))
             {
                 settingsFile = args[0];
             }
         }
-
         private void OpenLog(string filename, bool append)
         {
             if (!string.IsNullOrEmpty(filename))
@@ -72,6 +95,12 @@ namespace Hpdi.Vss2Git
 
         private void goButton_Click(object sender, EventArgs e)
         {
+            if (sender != null && batchSettingsFiles != null)
+            {
+                batchSettingsIndex = -1;
+                statusTimer.Enabled = true;
+                return;
+            }
             try
             {
                 OpenLog(logTextBox.Text, false);
@@ -235,10 +264,19 @@ namespace Hpdi.Vss2Git
 
             if (workQueue.IsIdle)
             {
-                revisionAnalyzer = null;
-                changesetBuilder = null;
+                if (batchSettingsFiles != null && batchSettingsIndex < batchSettingsFiles.Length - 1)
+                {
+                    batchSettingsIndex++;
+                    LoadSettings(batchSettingsFiles[batchSettingsIndex]);
+                    goButton_Click(null, null);
+                }
+                else
+                {
+                    revisionAnalyzer = null;
+                    changesetBuilder = null;
 
-                SetControlState(true);
+                    SetControlState(true);
+                }
             }
 
             var exceptions = workQueue.FetchExceptions();
