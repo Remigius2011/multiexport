@@ -39,6 +39,12 @@ namespace Hpdi.Vss2Git
         {
         }
 
+        public Logger(string filename, bool append)
+            : this(new FileStream(filename, append ? FileMode.Append : FileMode.Create,
+                FileAccess.Write, FileShare.Read))
+        {
+        }
+
         public Logger(Stream baseStream)
             : this(baseStream, Encoding.Default, CultureInfo.InvariantCulture)
         {

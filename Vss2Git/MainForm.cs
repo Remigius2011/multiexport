@@ -51,7 +51,7 @@ namespace Hpdi.Vss2Git
             }
         }
 
-        private void OpenLog(string filename)
+        private void OpenLog(string filename, bool append)
         {
             if (!string.IsNullOrEmpty(filename))
             {
@@ -59,7 +59,7 @@ namespace Hpdi.Vss2Git
                 {
                     string path = Path.GetDirectoryName(filename);
                     Directory.CreateDirectory(path);
-                    logger = new Logger(filename);
+                    logger = new Logger(filename, append);
                     return;
                 }
                 catch (Exception x)
@@ -74,7 +74,7 @@ namespace Hpdi.Vss2Git
         {
             try
             {
-                OpenLog(logTextBox.Text);
+                OpenLog(logTextBox.Text, false);
 
                 logger.WriteLine("VSS2Git version {0}", Assembly.GetExecutingAssembly().GetName().Version);
 
@@ -159,17 +159,23 @@ namespace Hpdi.Vss2Git
                     logger = Logger.Null;
                 };
 
-                statusTimer.Enabled = true;
-                goButton.Enabled = false;
-                showLogButton.Enabled = false;
-                loadSettingsButton.Enabled = false;
-                cancelButton.Text = "Cancel";
-                toolTip.SetToolTip(cancelButton, "Click to cancel the export");
+                SetControlState(false);
             }
             catch (Exception ex)
             {
                 ShowException(ex);
             }
+        }
+
+        private void SetControlState(bool idle)
+        {
+            statusTimer.Enabled = !idle;
+            goButton.Enabled = idle;
+            verifyButton.Enabled = idle;
+            showLogButton.Enabled = idle;
+            loadSettingsButton.Enabled = idle;
+            cancelButton.Text = idle ? "Close" : "Cancel";
+            toolTip.SetToolTip(cancelButton, idle ? "Click to close the window" : "Click to cancel the export");
         }
 
         private IVcsWrapper CreateVcsWrapper(Encoding commitEncoding)
@@ -232,12 +238,7 @@ namespace Hpdi.Vss2Git
                 revisionAnalyzer = null;
                 changesetBuilder = null;
 
-                statusTimer.Enabled = false;
-                goButton.Enabled = true;
-                showLogButton.Enabled = true;
-                loadSettingsButton.Enabled = true;
-                cancelButton.Text = "Close";
-                toolTip.SetToolTip(cancelButton, "Click to close the window");
+                SetControlState(true);
             }
 
             var exceptions = workQueue.FetchExceptions();
@@ -325,6 +326,7 @@ namespace Hpdi.Vss2Git
             toolTip.SetToolTip(sameCommentUpDown, "Set the maximum time frame to join subsequent check-ins having the same comment to a single commit");
             toolTip.SetToolTip(saveSettingsButton, "Click to save the current settings to a file");
             toolTip.SetToolTip(loadSettingsButton, "Click to load application settings from a previously saved settings file");
+            toolTip.SetToolTip(verifyButton, "Click to trigger a verification manually");
             toolTip.SetToolTip(goButton, "Click to start the export");
             toolTip.SetToolTip(cancelButton, "Click to close the window");
         }
@@ -634,6 +636,44 @@ namespace Hpdi.Vss2Git
             {
                 MessageBox.Show("log file does not exist", "Show log",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void verifyButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenLog(logTextBox.Text, true);
+
+                Encoding encoding = Encoding.Default;
+                EncodingInfo encodingInfo;
+                if (codePages.TryGetValue(encodingComboBox.SelectedIndex, out encodingInfo))
+                {
+                    encoding = encodingInfo.GetEncoding();
+                }
+                // no real dictionary needed here
+                var emailDictionary = new Dictionary<string, string>();
+                if (!string.IsNullOrEmpty(outDirTextBox.Text))
+                {
+                    IVcsWrapper vcsWrapper = CreateVcsWrapper(encoding);
+
+                    var vcsExporter = new VcsExporter(workQueue, logger,
+                        revisionAnalyzer, changesetBuilder, vcsWrapper, emailDictionary);
+                    vcsExporter.VerifyDir = verifyDirTextBox.Text;
+                    vcsExporter.Verify(outDirTextBox.Text);
+                }
+
+                workQueue.Idle += delegate
+                {
+                    logger.Dispose();
+                    logger = Logger.Null;
+                };
+
+                SetControlState(false);
+            }
+            catch (Exception ex)
+            {
+                ShowException(ex);
             }
         }
     }

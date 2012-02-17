@@ -35,7 +35,6 @@ namespace Hpdi.Vss2Git
     {
         private const string DefaultComment = "Vss2Git";
 
-        private readonly VssDatabase database;
         private readonly RevisionAnalyzer revisionAnalyzer;
         private readonly ChangesetBuilder changesetBuilder;
         private readonly IVcsWrapper vcsWrapper;
@@ -76,11 +75,44 @@ namespace Hpdi.Vss2Git
             IVcsWrapper vcsWrapper, IDictionary<string, string> emailDictionary)
             : base(workQueue, logger)
         {
-            this.database = revisionAnalyzer.Database;
             this.revisionAnalyzer = revisionAnalyzer;
             this.changesetBuilder = changesetBuilder;
             this.vcsWrapper = vcsWrapper;
             this.emailDictionary = emailDictionary;
+        }
+
+        public void Verify(string outputDirectory)
+        {
+            workQueue.AddLast(delegate(object work)
+            {
+                bool verifyOK = true;
+                bool doVerify = !string.IsNullOrEmpty(verifyDir) && Directory.Exists(verifyDir);
+                if (!doVerify)
+                {
+                    throw new ApplicationException("Verify directory does not exist");
+                }
+                var verifyStopwatch = Stopwatch.StartNew();
+                logger.WriteSectionSeparator();
+                LogStatus(work, "Verifying final state - triggered by user");
+                int verifyResult = CompareDirectory(verifyDir, outputDirectory);
+                if (verifyResult == 0)
+                {
+                    logger.WriteLine("Verify OK - result is identical to expected state");
+                }
+                else
+                {
+                    logger.WriteLine("Verify failed - result has " + verifyResult + " differences to expected state");
+                    verifyOK = false;
+                }
+                verifyStopwatch.Stop();
+
+                logger.WriteSectionSeparator();
+                logger.WriteLine("Verify time: {0:HH:mm:ss}", new DateTime(verifyStopwatch.Elapsed.Ticks));
+                if (!verifyOK)
+                {
+                    throw new ApplicationException("Verify failed - see log for details");
+                }
+            });
         }
 
         public void ExportToVcs(string outputDirectory)
@@ -276,7 +308,7 @@ namespace Hpdi.Vss2Git
                 if (doVerify)
                 {
                     logger.WriteSectionSeparator();
-                    LogStatus(work, "Verifying final state");
+                    LogStatus(work, "Verifying final state - after export");
                     int verifyResult = CompareDirectory(verifyDir, outputDirectory);
                     if (verifyResult == 0)
                     {
@@ -293,7 +325,8 @@ namespace Hpdi.Vss2Git
                 totalStopwatch.Stop();
 
                 logger.WriteSectionSeparator();
-                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss}", new DateTime(totalStopwatch.Elapsed.Ticks));
+                logger.WriteLine(vcs + " export complete in {0:HH:mm:ss} ({1} ms)", new DateTime(totalStopwatch.Elapsed.Ticks),
+                    totalStopwatch.Elapsed.Ticks / 10000);
                 logger.WriteLine("Replay time: {0:HH:mm:ss}", new DateTime(replayStopwatch.Elapsed.Ticks));
                 logger.WriteLine(vcs + " time: {0:HH:mm:ss}", new DateTime(vcsWrapper.ElapsedTime().Ticks));
                 logger.WriteLine(vcs + " commits: {0}", commitCount);
@@ -601,7 +634,7 @@ namespace Hpdi.Vss2Git
                     if (isAddAction)
                     {
                         if (revisionAnalyzer.IsDestroyed(target.PhysicalName) &&
-                            !database.ItemExists(target.PhysicalName))
+                            !revisionAnalyzer.Database.ItemExists(target.PhysicalName))
                         {
                             logger.WriteLine("NOTE: Skipping destroyed file: {0}", targetPath);
                             itemInfo.Destroyed = true;
@@ -775,7 +808,7 @@ namespace Hpdi.Vss2Git
             Stream contents;
             try
             {
-                item = (VssFile)database.GetItemPhysical(physical);
+                item = (VssFile)revisionAnalyzer.Database.GetItemPhysical(physical);
                 revision = item.GetRevision(version);
                 contents = revision.GetContents();
             }
