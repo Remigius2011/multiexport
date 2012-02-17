@@ -1,0 +1,20 @@
+
+# C# binaries
+*/bin/**
+*/obj/**
+
+# backup files created by merge tools
+*.bak
+
+# VS user settings
+*.suo
+*.csproj.user
+
+# repos & logs in test directory
+
+test/git/*
+test/hg/*
+test/svn/*
+test/vss/*
+
+test/logs/*
